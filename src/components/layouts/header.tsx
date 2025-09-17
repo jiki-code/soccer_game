@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/toggle-theme";
-
+import Link from "next/link";
 import { navLinksHeader } from "@/datas/common";
 import { Menu, X, Volleyball } from "lucide-react";
 export default function Header() {
@@ -19,12 +19,12 @@ export default function Header() {
     root.classList.toggle("dark", theme === "dark");
   }, [theme]);
   return (
-    <header className="fixed z-50 w-full border-b h-20" 
+    <header className="sticky z-50 w-full border-b h-20" 
         style={{
         backgroundColor: "var(--background)",
         color: "var(--foreground)",
     }}>
-      <div className="mx-auto w-7xl flex items-center justify-between px-3 pt-2">
+      <div className="mx-auto w-full max-w-8/10 flex items-center justify-between px-3 pt-2">
         {/* Logo + Nav */}
         <div className="flex items-center gap-8">
           {/* Logo */}
@@ -38,9 +38,13 @@ export default function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-6 var(--foreground) font-medium">
             {navLinksHeader.map((link) => (
-              <a key={link} href="#" className="hover:text-[var(--button-green)]">
-                {link}
-              </a>
+              <Link
+          key={link}
+          href={`/${link.toLowerCase()}`} // ví dụ: /home, /about
+          className="hover:text-[var(--button-green)]"
+        >
+          {link}
+        </Link>
             ))}
           </nav>
         </div>
@@ -68,13 +72,14 @@ export default function Header() {
       {menuOpen && (
         <div className="md:hidden mt-4 pt-2 flex flex-col items-start gap-4 var(--foreground) bg-white  px-2">
           {navLinksHeader.map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="text-blue-500 hover:text-[#00FF9D]"
-            >
-              {link}
-            </a>
+              <Link
+          key={link}
+          href={`/${link.toLowerCase()}`} // ví dụ: /home, /about
+           className="text-blue-500 hover:text-[#00FF9D]"
+        >
+          {link}
+        </Link>
+           
           ))}
           <div className="flex gap-4 py-2">
             <Button label="Login" variant="solid" />

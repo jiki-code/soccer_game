@@ -16,12 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <Loading /> */}
       <body className="bg-[var(--background)] text-[var(--foreground)]">
         <Header />
-        <main className="min-h-[60vh]">  <Providers>
-          {children}
-        </Providers></main>
+        <main>
+          <Providers>{children}</Providers>
+        </main>
         <Footer />
       </body>
     </html>
