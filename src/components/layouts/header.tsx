@@ -14,21 +14,28 @@ export default function Header() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
- useEffect(() => {
+  useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("dark", theme === "dark");
   }, [theme]);
   return (
-    <header className="sticky z-50 w-full border-b h-20" 
-        style={{
+    <header
+      className="sticky z-50 w-full border-b h-20"
+      style={{
         backgroundColor: "var(--background)",
         color: "var(--foreground)",
-    }}>
+      }}
+    >
       <div className="mx-auto w-full max-w-8/10 flex items-center justify-between px-3 pt-2">
         {/* Logo + Nav */}
         <div className="flex items-center gap-8">
           {/* Logo */}
-          <div className="flex items-center gap-2 text-[var(--button-green)] font-bold text-xl">
+          <div
+            className="flex items-center gap-2 text-[var(--button-green)] font-bold text-xl cursor-pointer"
+            onClick={() => {
+              <Link key="/" href="/" />;
+            }}
+          >
             <Volleyball className="w-5 h-5" />
             <span>
               Bet<span className="var(--foreground)">Soccer</span>
@@ -37,14 +44,14 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-6 var(--foreground) font-medium">
-            {navLinksHeader.map((link) => (
+            {navLinksHeader.map((it) => (
               <Link
-          key={link}
-          href={`/${link.toLowerCase()}`} // ví dụ: /home, /about
-          className="hover:text-[var(--button-green)]"
-        >
-          {link}
-        </Link>
+                key={it.link}
+                href={`/${it.link.toLowerCase()}`} // ví dụ: /home, /about
+                className="hover:text-[var(--button-green)]"
+              >
+                {it.name}
+              </Link>
             ))}
           </nav>
         </div>
@@ -71,15 +78,14 @@ export default function Header() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden mt-4 pt-2 flex flex-col items-start gap-4 var(--foreground) bg-white  px-2">
-          {navLinksHeader.map((link) => (
-              <Link
-          key={link}
-          href={`/${link.toLowerCase()}`} // ví dụ: /home, /about
-           className="text-blue-500 hover:text-[#00FF9D]"
-        >
-          {link}
-        </Link>
-           
+          {navLinksHeader.map((it) => (
+            <Link
+              key={it.link}
+              href={`/${it.link.toLowerCase()}`}
+              className="text-blue-500 hover:text-[#00FF9D]"
+            >
+              {it.name}
+            </Link>
           ))}
           <div className="flex gap-4 py-2">
             <Button label="Login" variant="solid" />

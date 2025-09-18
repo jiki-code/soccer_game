@@ -1,23 +1,37 @@
+"use client";
 import React from "react";
 import { Card, CardContent, ScrollArea } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { HotMatch } from "@/components/ui/hot-match";
+import { MatchesSlider } from "@/components/ui/matches-slider";
+import { BetCard } from "@/components/ui/matchInfo";
+
 import Arsenal from "../../public/assets/images/602.png";
 import MU from "../../public/assets/images/680.png";
 import demo from "../../public/assets/images/2000271105.png";
-
-import clsx from "clsx";
+import demo2 from "../../public/assets/images/612.png";
+import { MatchCardProps, Match } from "@/models/carousel";
 import Image from "next/image";
-import {
-  MessageSquareText,
-  Trophy,
-  Flame,
-  Star,
-  BarChart,
-  Newspaper,
-} from "lucide-react";
-
+import { MessageSquareText, Trophy, Flame, Star, BarChart } from "lucide-react";
+import clsx from "clsx";
+import LeaderBoard from "@/components/layouts/leader-board"
 export default function SportsDashboard() {
+  const [isDetail, SetIsDetail] = React.useState<boolean>(false);
+  const [dataDetail, setDataDetail] = React.useState<Match>({
+    league: "",
+    homeTeam: {
+      name: "",
+      logo: "",
+    },
+    awayTeam: {
+      name: "",
+      logo: "",
+    },
+    time: "",
+    match: "",
+    bg: "",
+  });
+
   const hotMatches = [
     {
       league: "Premier League",
@@ -48,6 +62,7 @@ export default function SportsDashboard() {
       height: "h-24",
       textColor: "text-gray-300",
       range: 2,
+      size: 50,
     },
     {
       name: "Sarah Chen",
@@ -56,6 +71,7 @@ export default function SportsDashboard() {
       height: "h-32",
       textColor: "text-yellow-400",
       range: 1,
+      size: 60,
     },
     {
       name: "Mike Rodriguez",
@@ -64,6 +80,7 @@ export default function SportsDashboard() {
       height: "h-20",
       textColor: "text-orange-400",
       range: 3,
+      size: 40,
     },
   ];
 
@@ -75,15 +92,73 @@ export default function SportsDashboard() {
   const featuredMatches = [
     {
       league: "Champions League",
-      match: "PSG VS Bayern",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
       time: "21:00 • Parc des Princes",
       bg: "bg-[#4338ca]",
     },
     {
       league: "Premier League",
-      match: "Liverpool VS Chelsea",
-      time: "16:30 • Anfield",
-      bg: "bg-[#065f46]",
+      homeTeam: { name: "Arsenal", logo: Arsenal },
+      awayTeam: { name: "Bayern", logo: MU },
+      time: "18:30 • Stamford Bridge",
+      bg: "bg-[#059669]",
+    },
+    {
+      league: "La Liga",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "20:00 • Camp Nou",
+      bg: "bg-[#dc2626]",
+    },
+    {
+      league: "Serie A",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "19:00 • Allianz Stadium",
+      bg: "bg-[#6d28d9]",
+    },
+    {
+      league: "Bundesliga",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "17:30 • Signal Iduna Park",
+      bg: "bg-[#d97706]",
+    },
+    {
+      league: "Ligue 1",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "20:45 • Groupama Stadium",
+      bg: "bg-[#047857]",
+    },
+    {
+      league: "Eredivisie",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "16:00 • Johan Cruyff Arena",
+      bg: "bg-[#dc2626]",
+    },
+    {
+      league: "Primeira Liga",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "21:15 • Estádio da Luz",
+      bg: "bg-[#2563eb]",
+    },
+    {
+      league: "MLS",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "19:30 • BMO Stadium",
+      bg: "bg-[#be185d]",
+    },
+    {
+      league: "Copa Libertadores",
+      homeTeam: { name: "PSG", logo: demo },
+      awayTeam: { name: "Bayern", logo: demo2 },
+      time: "20:00 • La Bombonera",
+      bg: "bg-[#1e40af]",
     },
   ];
 
@@ -92,6 +167,10 @@ export default function SportsDashboard() {
     { label: "Live Matches", value: "23", color: "text-red-500" },
     { label: "Total Payout", value: "$2.4M", color: "text-yellow-400" },
   ];
+  const selectedMatch = (item: MatchCardProps) => {
+    SetIsDetail(true);
+    setDataDetail(item);
+  };
 
   return (
     <div className="w-full flex md:flex-row flex-col gap-6 p-3 bg-[#0f172a] text-white min-h-screen">
@@ -129,40 +208,15 @@ export default function SportsDashboard() {
       <div className="md:w-6/12 w-full space-y-6">
         <Card className="bg-[#1e293b] h-90">
           <CardContent className="p-4 ">
-            <div className="flex items-center justify-center mb-6 ">
+            <div className=" flex items-center justify-start mb-6 ">
               <Trophy className="mr-2 text-yellow-400 " />{" "}
               <span className="text-2xl font-bold">
                 Top Players Leaderboard
               </span>
             </div>
             {/* Leaderboard chart replacement */}
-            <div className="flex justify-evenly text-center items-end">
-              {leaderboard.map((player, idx) => (
-                <div key={idx} className={player.textColor}>
-                  <div
-                    className={`${player.color} ${player.height} w-20 rounded-t-md mx-auto justify-center flex items-end`}
-                  >
-                    {" "}
-                    <span className="text-black text-xl">
-                      {player.range}
-                    </span>{" "}
-                  </div>
-
-                  <div
-                    className={`rounded-full w-20 ml-2 p-1 bg-white border-3 mt-2 border-[${player.color}]`}
-                  >
-                    <Image
-                      src={demo}
-                      alt="Placeholder"
-                      width={70}
-                      height={70}
-                    />
-                  </div>
-                  <p className="mt-2">{player.name}</p>
-                  <p className="text-sm text-gray-400">{player.score}</p>
-                </div>
-              ))}
-            </div>
+            <LeaderBoard />
+        
           </CardContent>
         </Card>
         <Card className="bg-[#1e293b] md:col-span-2">
@@ -170,17 +224,35 @@ export default function SportsDashboard() {
             <div className="flex items-center text-yellow-400 font-semibold mb-4">
               <Star className="mr-2" /> Featured Matches Today
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              {featuredMatches.map((match, idx) => (
-                <div key={idx} className={`${match.bg} p-4 rounded-lg`}>
-                  <p className="text-sm text-gray-200">{match.league}</p>
-                  <p className="font-semibold text-xl">{match.match}</p>
-                  <p className="text-sm text-gray-300 mt-1">{match.time}</p>
-                </div>
-              ))}
+            <div className="grid gap-6">
+              <MatchesSlider
+                items={featuredMatches}
+                interval={3000}
+                itemsPerPage={2}
+              />
             </div>
           </CardContent>
         </Card>
+
+        {isDetail ? (
+          <BetCard
+            classColor="bg-[linear-gradient(135deg,#2e0d5e,#4a1f8a)]"
+            market="OVER 2"
+            league={dataDetail.league}
+            typeGame="full"
+            homeTeam={dataDetail.homeTeam?.name}
+            awayTeam={dataDetail.awayTeam?.name}
+            homeLogo={dataDetail.homeTeam?.logo}
+            awayLogo={dataDetail.awayTeam?.logo}
+            odds={{ home: 2.1, draw: 3.3, away: 3.5 }}
+            initialVotes={128}
+            initialMinute={12}
+            scoreHome={0}
+            scoreAway={1}
+          />
+        ) : (
+          ""
+        )}
       </div>
 
       {/* Live Chat */}

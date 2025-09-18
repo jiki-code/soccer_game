@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layouts/header";
 import Footer from "@/components/layouts/footer";
 import { Providers } from "./Providers";
+import ToastProvider from "./ToastProvider";
 
 export const metadata: Metadata = {
   title: "Soccer game",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <Header />
         <main>
           <Providers>{children}</Providers>
+          <ToastProvider />
         </main>
         <Footer />
       </body>
