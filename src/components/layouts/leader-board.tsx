@@ -96,7 +96,7 @@ export default function LeaderBoard() {
             {
               <div
                 className={`absolute -bottom-16  ${
-                  player.position !== 1 ? "w-36 h-32" : "w-56 h-42"
+                  player.position !== 1 ? "sm:w-30 sm:h-28 lg:w-36 lg:h-32 w-28 h-28" : "sm:w-40 sm:h-38 lg:w-56 lg:h-42 w-46 h-38"
                 }  `}
               >
                 <Image
@@ -157,8 +157,8 @@ export default function LeaderBoard() {
               </div>
             </div>
             <div className="mt-16 absolute">
-              <p className="text-white text-lg font-semibold">{player.name}</p>
-              <p className={`text-${player.color} text-xl font-bold`}>
+              <p className="text-white md:text-lg text-sm font-semibold">{player.name}</p>
+              <p className={`text-${player.color} md:text-lg text-sm font-bold`}>
                 {player.points}
               </p>
               <p className="text-sm text-gray-100">{player.username}</p>

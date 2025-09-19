@@ -17,9 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[var(--background)] text-[var(--foreground)]">
+      <body>
         <Header />
-        <main>
+        <main className="bg-[var(--body)] text-[var(--foreground)]">
           <Providers>{children}</Providers>
           <ToastProvider />
         </main>

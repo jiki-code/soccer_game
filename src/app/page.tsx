@@ -171,10 +171,10 @@ export default function SportsDashboard() {
   };
 
   return (
-    <div className="w-full flex md:flex-row flex-col gap-6 p-3 bg-[#0f172a] text-white min-h-screen">
+    <div className="w-full flex md:flex-row flex-col gap-6 p-3 text-white min-h-screen">
       {/* Hot Matches */}
-      <div className="md:w-1/12"></div>
-      <Card className="bg-[#1e293b] md:w-2/12 w-full">
+      <div className="hidden xl:block 2xl:w-1/12"></div>
+      <Card className="bg-[#1e293b] w-full md:w-3/12 2xl:w-2/12">
         <CardContent className="p-3">
           <div className="flex items-center text-green-400 font-semibold mb-4">
             <Flame className="mr-2" /> Hot Matches
@@ -203,7 +203,7 @@ export default function SportsDashboard() {
       </Card>
 
       {/* Leaderboard */}
-      <div className="md:w-6/12 w-full space-y-6">
+     <div className="w-full md:w-6/12 2xl:w-6/12 space-y-6 mx-auto">
         <Card className="bg-[#1e293b] h-96">
           <CardContent className="p-2">
             <div className=" flex items-center justify-start mb-3 ">
@@ -254,7 +254,7 @@ export default function SportsDashboard() {
       </div>
 
       {/* Live Chat */}
-      <div className="md:w-2/12 w-full space-y-6">
+      <div className=" w-full md:w-3/12 2xl:w-2/12 space-y-6">
         <Card className="bg-[#1e293b] h-96">
           <CardContent className="p-3">
             <div className="flex items-center text-green-400 font-semibold mb-4">
@@ -296,7 +296,7 @@ export default function SportsDashboard() {
           </CardContent>
         </Card>
       </div>
-      <div className="md:w-1/12"></div>
+     <div className="hidden 2xl:block 2xl:w-1/12"></div>
     </div>
   );
 }

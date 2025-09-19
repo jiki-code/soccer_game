@@ -60,7 +60,7 @@ const MatchesSlider: React.FC<CarouselProps> = ({
       onBlur={() => setPaused(false)}
     >
       {/* Items shown */}
-      <div className={`flex gap-3 cursor-pointer`}>
+      <div className={`flex lg:flex-col xl:flex-row flex-col gap-3 cursor-pointer`}>
         {currentItems.map((item, idx) => (
           <BetCard
             classColor={
