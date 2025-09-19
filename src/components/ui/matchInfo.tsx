@@ -91,7 +91,7 @@ function BetCard({
     <div className="flex justify-center items-center">
       <div
         className={clsx(
-          "w-[500px] rounded-2xl  ring-1 ring-white/15 text-white shadow-xl overflow-hidden",
+          "w-[435px] rounded-2xl  ring-1 ring-white/15 text-white shadow-xl overflow-hidden",
           classColor
         )}
       >

@@ -11,9 +11,7 @@ import MU from "../../public/assets/images/680.png";
 import demo from "../../public/assets/images/2000271105.png";
 import demo2 from "../../public/assets/images/612.png";
 import { MatchCardProps, Match } from "@/models/carousel";
-import Image from "next/image";
 import { MessageSquareText, Trophy, Flame, Star, BarChart } from "lucide-react";
-import clsx from "clsx";
 import LeaderBoard from "@/components/layouts/leader-board"
 export default function SportsDashboard() {
   const [isDetail, SetIsDetail] = React.useState<boolean>(false);
@@ -206,9 +204,9 @@ export default function SportsDashboard() {
 
       {/* Leaderboard */}
       <div className="md:w-6/12 w-full space-y-6">
-        <Card className="bg-[#1e293b] h-90">
-          <CardContent className="p-4 ">
-            <div className=" flex items-center justify-start mb-6 ">
+        <Card className="bg-[#1e293b] h-96">
+          <CardContent className="p-2">
+            <div className=" flex items-center justify-start mb-3 ">
               <Trophy className="mr-2 text-yellow-400 " />{" "}
               <span className="text-2xl font-bold">
                 Top Players Leaderboard
@@ -224,7 +222,7 @@ export default function SportsDashboard() {
             <div className="flex items-center text-yellow-400 font-semibold mb-4">
               <Star className="mr-2" /> Featured Matches Today
             </div>
-            <div className="grid gap-6">
+            <div className="grid justify-center gap-6">
               <MatchesSlider
                 items={featuredMatches}
                 interval={3000}
@@ -257,7 +255,7 @@ export default function SportsDashboard() {
 
       {/* Live Chat */}
       <div className="md:w-2/12 w-full space-y-6">
-        <Card className="bg-[#1e293b] h-90">
+        <Card className="bg-[#1e293b] h-96">
           <CardContent className="p-3">
             <div className="flex items-center text-green-400 font-semibold mb-4">
               <MessageSquareText className="mr-2" /> Live Chat

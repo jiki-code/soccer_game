@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-import clsx from "clsx";
-import Image from "next/image";
 import { MatchCardProps } from "@/models/carousel";
 import { BetCard } from "@/components/ui/matchInfo";
 
@@ -34,7 +32,6 @@ const MatchesSlider: React.FC<CarouselProps> = ({
   itemsPerPage = 3,
   autoPlay = true,
   className = "",
-  selectedItem,
 }) => {
   const [page, setPage] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
@@ -63,7 +60,7 @@ const MatchesSlider: React.FC<CarouselProps> = ({
       onBlur={() => setPaused(false)}
     >
       {/* Items shown */}
-      <div className={`grid grid-cols-${itemsPerPage} gap-3 cursor-pointer`}>
+      <div className={`flex gap-3 cursor-pointer`}>
         {currentItems.map((item, idx) => (
           <BetCard
             classColor={
@@ -110,4 +107,4 @@ const MatchesSlider: React.FC<CarouselProps> = ({
   );
 };
 
-export { MatchesSlider, MatchCard };
+export { MatchesSlider };
