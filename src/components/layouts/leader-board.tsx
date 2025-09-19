@@ -7,7 +7,7 @@ import avatar2 from "../../../public/assets/images/5103697.png";
 import avatar3 from "../../../public/assets/images/5103797.png";
 import golden_laurel_wreath from "../../../public/assets/images/wreath_gold_sparkle2.png";
 import brozen_laurel_wreath from "../../../public/assets/images/brozen.png";
-import { Star  } from "lucide-react";
+import StarIcon from "../../../public/assets/images/star.png";
 import clsx from "clsx";
 import styles from "./layouts.module.css";
 
@@ -145,12 +145,14 @@ export default function LeaderBoard() {
               </div>
             </div>
             <div className="flex absolute bottom-24  space-x-1">
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-2">
                 {Array.from({ length: player.position === 1 ? 3 : player.position === 3 ? 1 : player.position }).map((_, idx) => (
-                    <Star
-                      key={idx + Math.random()}
-                      className={`w-5 h-5 font-bold text-white rounded-full bg-yellow-500 p-0.5`}
-                    />
+                  <Image
+                    key={idx}
+                    src={StarIcon}
+                    alt="Star"
+                    className={`w-5 h-5`}
+                  />
                 ))}
               </div>
             </div>
