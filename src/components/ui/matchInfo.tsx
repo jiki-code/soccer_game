@@ -91,8 +91,8 @@ function BetCard({
         )}
       >
         {/* Header */}
-        <div className="relative p-4 sm:p-5">
-          <div className="flex items-center justify-between gap-3">
+        <div className="relative p-3 sm:p-5">
+          <div className="flex items-center justify-between gap-2">
             {/* League / Logo */}
             <div className="flex items-center gap-2">
               <div className="relative w-[40px] h-[24px] sm:w-[50px] sm:h-[40px]">
@@ -107,12 +107,12 @@ function BetCard({
             </div>
 
             {/* Market badge (no fixed width/height, responsive padding) */}
-            <span className="relative block w-[150px] md:w-[120px] md:h-[40px] lg:ml-[-15px] 
+            <span className="relative block w-[120px] md:w-[120px] h-[40px]  md:h-[45px] lg:ml-[-15px] 
           bg-red-500  shadow-lg
           translate-x-[20px] -translate-y-[20px]  rounded-b-2xl
           
         ">
-              <p className="text-center text-white text-lg md:text-xl font-bold font_title">
+              <p className="text-center mt-2 text-white text-lg md:text-xl font-bold font_title">
                 {market}
               </p>
             </span>
@@ -171,7 +171,7 @@ function BetCard({
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-5 py-3 bg-black/20">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-2 sm:px-3 py-3 bg-black/20">
           <span className="text-sm text-white/80">
             {votes.toLocaleString()} đang bình chọn
           </span>

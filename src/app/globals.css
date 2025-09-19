@@ -5,7 +5,7 @@
   --foreground: #171717;
   --button-green: #159966;
   --border:   oklch(1 0 0 / 15%);
-  --input: oklch(0.922 0 0);
+  --input: oklch(89.922% 0.00654 16.419);
   --ring: oklch(0.708 0 0);
   --body: #2c354b;
 }
@@ -15,7 +15,7 @@
   --foreground: #ededed;
   --button-green: #00ff88;
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(0.922 0 0);
+  --input: oklch(76.92% 0.00338 15.809);
   --ring: oklch(0.556 0 0);
   --body: #1b253d;
 

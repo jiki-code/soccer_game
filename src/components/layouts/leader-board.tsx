@@ -5,7 +5,7 @@ import Image from "next/image";
 import avatar1 from "../../../public/assets/images/5101221.png";
 import avatar2 from "../../../public/assets/images/5103697.png";
 import avatar3 from "../../../public/assets/images/5103797.png";
-import golden_laurel_wreath from "../../../public/assets/images/wreath_gold_sparkle2.png";
+import golden_laurel_wreath from "../../../public/assets/images/wreath_gold_sparkle.png";
 import brozen_laurel_wreath from "../../../public/assets/images/brozen.png";
 import StarIcon from "../../../public/assets/images/star.png";
 import clsx from "clsx";
@@ -95,8 +95,8 @@ export default function LeaderBoard() {
           >
             {
               <div
-                className={`absolute -bottom-16  ${
-                  player.position !== 1 ? "sm:w-30 sm:h-28 lg:w-36 lg:h-32 w-28 h-28" : "sm:w-40 sm:h-38 lg:w-56 lg:h-42 w-46 h-38"
+                className={`absolute sm:-bottom-16 -bottom-15   ${
+                  player.position !== 1 ? "sm:w-30 sm:h-28 lg:w-36 lg:h-32 w-24 h-32" : "sm:w-40 sm:h-38 lg:w-56 lg:h-42 w-36 h-40"
                 }  `}
               >
                 <Image

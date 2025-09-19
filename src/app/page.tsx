@@ -11,8 +11,15 @@ import MU from "../../public/assets/images/680.png";
 import demo from "../../public/assets/images/2000271105.png";
 import demo2 from "../../public/assets/images/612.png";
 import { MatchCardProps, Match } from "@/models/carousel";
-import { MessageSquareText, Trophy, Flame, Star, BarChart } from "lucide-react";
-import LeaderBoard from "@/components/layouts/leader-board"
+import {
+  MessageSquareText,
+  Trophy,
+  Flame,
+  Star,
+  BarChart,
+  Newspaper,
+} from "lucide-react";
+import LeaderBoard from "@/components/layouts/leader-board";
 export default function SportsDashboard() {
   const [isDetail, SetIsDetail] = React.useState<boolean>(false);
   const [dataDetail, setDataDetail] = React.useState<Match>({
@@ -30,55 +37,22 @@ export default function SportsDashboard() {
     bg: "",
   });
 
-  const hotMatches = [
+  const news = [
     {
-      league: "Premier League",
-      teams: ["Man United", "Arsenal"],
-      score: "2 - 1",
-      time: "LIVE 75'",
-      timeColor: "text-red-500",
+      title: "Breaking: Major Transfer Announced in Football World",
+      time: "2 hours ago",
     },
     {
-      league: "La Liga",
-      teams: ["Real Madrid", "Barcelona"],
-      time: "18:00",
-      timeColor: "text-green-400",
+      title: "Injury Update: Star Player to Miss Upcoming Matches",
+      time: "5 hours ago",
     },
     {
-      league: "Serie A",
-      teams: ["Juventus", "AC Milan"],
-      time: "20:45",
-      timeColor: "text-blue-400",
-    },
-  ];
-
-  const leaderboard = [
-    {
-      name: "Alex Johnson",
-      score: "8,450 pts",
-      color: "bg-gray-500",
-      height: "h-24",
-      textColor: "text-gray-300",
-      range: 2,
-      size: 50,
+      title: "Matchday Highlights: Top Goals and Key Moments",
+      time: "1 day ago",
     },
     {
-      name: "Sarah Chen",
-      score: "12,890 pts",
-      color: "bg-yellow-400",
-      height: "h-32",
-      textColor: "text-yellow-400",
-      range: 1,
-      size: 60,
-    },
-    {
-      name: "Mike Rodriguez",
-      score: "7,230 pts",
-      color: "bg-orange-400",
-      height: "h-20",
-      textColor: "text-orange-400",
-      range: 3,
-      size: 40,
+      title: "Manager's Tactical Masterclass: How They Won the Game",
+      time: "3 days ago",
     },
   ];
 
@@ -203,7 +177,7 @@ export default function SportsDashboard() {
       </Card>
 
       {/* Leaderboard */}
-     <div className="w-full md:w-6/12 2xl:w-6/12 space-y-6 mx-auto">
+      <div className="w-full md:w-6/12 2xl:w-6/12 space-y-6 mx-auto">
         <Card className="bg-[#1e293b] h-96">
           <CardContent className="p-2">
             <div className=" flex items-center justify-start mb-3 ">
@@ -214,7 +188,6 @@ export default function SportsDashboard() {
             </div>
             {/* Leaderboard chart replacement */}
             <LeaderBoard />
-        
           </CardContent>
         </Card>
         <Card className="bg-[#1e293b] md:col-span-2">
@@ -260,7 +233,7 @@ export default function SportsDashboard() {
             <div className="flex items-center text-green-400 font-semibold mb-4">
               <MessageSquareText className="mr-2" /> Live Chat
             </div>
-            <ScrollArea className="h-24 mb-2">
+            <ScrollArea className="h-68 mb-2">
               <div className="space-y-1 text-sm">
                 {chatMessages.map((msg, idx) => (
                   <p key={idx}>
@@ -295,8 +268,26 @@ export default function SportsDashboard() {
             </div>
           </CardContent>
         </Card>
+        <Card className="bg-[#1e293b] col-span-1">
+          <CardContent>
+            <div className="flex items-center text-white font-semibold mb-4">
+              <Newspaper className="mr-2 text-yellow-400" /> Latest News
+            </div>
+            <div className="space-y-2 text-sm">
+              {news.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col border-b border-gray-600"
+                >
+                  <span className="text-[var(--input)]">{item.title}</span>
+                  <span className="text-gray-400">{item.time}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
-     <div className="hidden 2xl:block 2xl:w-1/12"></div>
+      <div className="hidden 2xl:block 2xl:w-1/12"></div>
     </div>
   );
 }

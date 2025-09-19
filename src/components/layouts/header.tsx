@@ -27,7 +27,7 @@ export default function Header() {
         color: "var(--foreground)",
       }}
     >
-      <div className="mx-auto w-full max-w-8/10 flex items-center justify-between px-3 pt-2">
+      <div className="mx-auto w-full max-w-full lg:max-w-8/10 flex items-center justify-between px-3 pt-2">
         {/* Logo + Nav */}
         <div className="flex items-center gap-8">
           {/* Logo */}
@@ -44,7 +44,7 @@ export default function Header() {
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-6 var(--foreground) font-medium">
+          <nav className="hidden md:flex gap-6 var(--foreground) font-semibold">
             {navLinksHeader.map((it) => (
               <Link
                 key={it.link}

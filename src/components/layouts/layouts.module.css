@@ -4,9 +4,7 @@
   position: relative;
   margin: 0 auto;
   border-radius: 10px;
-  overflow: hidden; /* Để bo góc áp dụng cả cho before/after */
-    background-image: url("../../../public/assets/images/fireworks_multi_black.gif");
-      background-size: contain;
+  overflow: hidden;
+  background-image: url("../../../public/assets/images/fireworks_multi_black.gif");
+  background-size: contain;
 }
-
-
