@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/toggle-theme";
+import { TagInfo } from "@/components/ui/tag-info";
 import Link from "next/link";
 import { navLinksHeader } from "@/datas/common";
 import { Menu, X, Volleyball } from "lucide-react";
@@ -61,6 +62,7 @@ export default function Header() {
           <Button label="Login" variant="solid" />
           <Button label="Sign Up" variant="outline" />
           <ThemeToggle changeBackGround={toggleTheme} theme={theme} />
+          <TagInfo userName="JohnDoe" className="bg-gray-300 cursor-pointer" />
         </div>
 
         {/* Mobile Toggle */}
