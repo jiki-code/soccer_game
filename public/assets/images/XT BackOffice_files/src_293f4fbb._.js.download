@@ -1,0 +1,1970 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/src/component/_backoffice/redux/hook.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "useAppDispatch",
+    ()=>useAppDispatch,
+    "useAppSelector",
+    ()=>useAppSelector
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-redux/dist/react-redux.mjs [app-client] (ecmascript)");
+;
+const useAppDispatch = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useDispatch"].withTypes();
+const useAppSelector = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSelector"].withTypes();
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/authSlice.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "authSlice",
+    ()=>authSlice,
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "setLoading",
+    ()=>setLoading,
+    "storeUser",
+    ()=>storeUser
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    loading: false,
+    user: {
+        ban_reason: "",
+        banned: false,
+        createdAt: "",
+        email: "",
+        email_verified: false,
+        id: "",
+        image: "",
+        name: "",
+        role: "",
+        updatedAt: "",
+        refreshToken: ""
+    }
+};
+const authSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: "auth",
+    initialState,
+    reducers: {
+        setLoading: (state, action)=>{
+            state.loading = action.payload;
+        },
+        storeUser: (state, action)=>{
+            state.user = action.payload;
+        }
+    }
+});
+const { setLoading, storeUser } = authSlice.actions;
+const __TURBOPACK__default__export__ = authSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/helper/apiRequest.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "apiRequest",
+    ()=>apiRequest
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+const BASE_URL = ("TURBOPACK compile-time value", "http://10.0.13.77:4000/api/v1");
+async function apiRequest(endpoint) {
+    let options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+    const { method = "GET", queryParams, body, binary = false, token } = options;
+    const queryString = queryParams ? "?" + new URLSearchParams(queryParams).toString() : "";
+    const url = "".concat(BASE_URL).concat(endpoint).concat(queryString);
+    var _localStorage_getItem;
+    // Use token from parameter or fallback to localStorage
+    let authToken = token || (("TURBOPACK compile-time truthy", 1) ? (_localStorage_getItem = localStorage.getItem("authToken")) !== null && _localStorage_getItem !== void 0 ? _localStorage_getItem : undefined : "TURBOPACK unreachable");
+    var _localStorage_getItem1;
+    let refreshToken = token || (("TURBOPACK compile-time truthy", 1) ? (_localStorage_getItem1 = localStorage.getItem("refreshToken")) !== null && _localStorage_getItem1 !== void 0 ? _localStorage_getItem1 : undefined : "TURBOPACK unreachable");
+    const doFetch = async (currentToken)=>{
+        const isFormData = body instanceof FormData;
+        return fetch(url, {
+            method,
+            headers: {
+                Accept: "application/json",
+                ...isFormData ? {} : {
+                    "Content-Type": binary ? "application/octet-stream" : "application/json"
+                },
+                ...currentToken ? {
+                    Authorization: "Bearer ".concat(currentToken)
+                } : {}
+            },
+            body: method !== "GET" ? isFormData ? body : binary ? body : JSON.stringify(body !== null && body !== void 0 ? body : {}) : undefined
+        });
+    };
+    if (!authToken) {
+        handleAuthRedirect();
+    }
+    if (!refreshToken) {
+        handleAuthRedirect();
+    }
+    let response = await doFetch(authToken);
+    // Handle 401 → refresh token if authToken exists
+    if (response.status === 401 && authToken) {
+        const valueReFreshToken = localStorage.getItem('refreshToken');
+        const payload = {
+            'refreshToken': valueReFreshToken
+        };
+        const refreshRes = await fetch("".concat(("TURBOPACK compile-time value", "http://10.0.13.77:4000/api/v1"), "/auth/refresh"), {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer ".concat(authToken)
+            },
+            body: JSON.stringify(payload)
+        });
+        if (refreshRes.ok) {
+            const refreshData = await refreshRes.json();
+            if (!refreshData.accessToken) throw new Error("Invalid refresh response");
+            authToken = refreshData.accessToken;
+            if ("TURBOPACK compile-time truthy", 1) localStorage.setItem("authToken", authToken);
+            response = await doFetch(authToken);
+        } else {
+            // refresh fail -> go to login
+            handleAuthRedirect();
+            throw new Error("Session expired. Please log in again.");
+        }
+    }
+    if (!response.ok) {
+        const message = await response.text();
+        throw new Error("API Error (".concat(response.status, "): ").concat(message));
+    }
+    if (response.status === 204) return {};
+    try {
+        let data = await response.json();
+        return data;
+    } catch (e) {
+        return {};
+    }
+}
+function handleAuthRedirect() {
+    if ("TURBOPACK compile-time truthy", 1) {
+        // remoke token exp
+        try {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("refreshToken");
+        } catch (e) {}
+        // back login page
+        window.location.replace("/login");
+    }
+    // show error for client
+    throw new Error("Auth required");
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/type/type.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// --------------------- CUSTOMER ---------------------
+__turbopack_context__.s([
+    "limitAPI",
+    ()=>limitAPI
+]);
+const limitAPI = '99999';
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/api/users.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "reqCreateUser",
+    ()=>reqCreateUser,
+    "reqGetAllUser",
+    ()=>reqGetAllUser,
+    "reqUpdateUser",
+    ()=>reqUpdateUser,
+    "reqUserById",
+    ()=>reqUserById
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/helper/apiRequest.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2f$type$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/type/type.ts [app-client] (ecmascript)");
+;
+;
+const reqGetAllUser = async function() {
+    let { query, token } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])('/user', {
+        method: 'GET',
+        queryParams: {
+            page: "1",
+            limit: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2f$type$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["limitAPI"],
+            ...query ? {
+                q: query
+            } : {}
+        },
+        token
+    });
+    return res;
+};
+const reqUpdateUser = async (id, data)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/user/".concat(id), {
+        method: "PUT",
+        body: data
+    });
+const reqCreateUser = async (payload)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/user", {
+        method: "POST",
+        body: payload
+    });
+const reqUserById = async (id)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/user/".concat(id));
+;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/hook/useAuth.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "useAuth",
+    ()=>useAuth
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/redux/hook.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/authSlice.ts [app-client] (ecmascript)");
+// import { authClient } from "@/component/_backoffice/helper/authClient";
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$users$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/api/users.ts [app-client] (ecmascript)");
+var _s = __turbopack_context__.k.signature();
+;
+;
+;
+;
+const useAuth = ()=>{
+    _s();
+    const dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
+    const { loading, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"])({
+        "useAuth.useAppSelector": (state)=>state.auth
+    }["useAuth.useAppSelector"]);
+    const authToken = ("TURBOPACK compile-time truthy", 1) ? localStorage.getItem("authToken") : "TURBOPACK unreachable";
+    const storeUserInfo = (userData)=>{
+        var _userData_createdAt, _userData_updatedAt, _userData_status;
+        const normalizedUser = {
+            ...userData,
+            createdAt: (_userData_createdAt = userData === null || userData === void 0 ? void 0 : userData.createdAt) !== null && _userData_createdAt !== void 0 ? _userData_createdAt : "",
+            updatedAt: (_userData_updatedAt = userData === null || userData === void 0 ? void 0 : userData.updatedAt) !== null && _userData_updatedAt !== void 0 ? _userData_updatedAt : "",
+            status: (_userData_status = userData === null || userData === void 0 ? void 0 : userData.status) !== null && _userData_status !== void 0 ? _userData_status : "inactive"
+        };
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["storeUser"])(normalizedUser));
+    };
+    const getUserByID = async (userID, refreshToken, accessToken)=>{
+        try {
+            const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$users$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["reqUserById"])(userID);
+            var _user_data;
+            localStorage.setItem("users", JSON.stringify((_user_data = user === null || user === void 0 ? void 0 : user.data) !== null && _user_data !== void 0 ? _user_data : ''));
+            storeUserInfo({
+                ...user === null || user === void 0 ? void 0 : user.data,
+                refreshToken: refreshToken,
+                token: accessToken,
+                status: "active"
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    // const logIn = async ({ email, password }: { email: string, password: string }) => {
+    //     try {
+    //         dispatch(setLoading(true));
+    //         const context = await authClient.signIn.email({
+    //             email,
+    //             password,
+    //             rememberMe: false,
+    //             callbackURL: '/'
+    //         });
+    //         dispatch(setLoading(false));
+    //         if (context.data) {
+    //             storeUserInfo({ ...context.data, status: "active" });
+    //         }
+    //         return context.data;
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // }
+    const logIn = async (param)=>{
+        let { email, password } = param;
+        try {
+            var _data_data, _data_data1, _data_data2, _data_data3;
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(true));
+            const response = await fetch("".concat(("TURBOPACK compile-time value", "http://10.0.13.77:4000/api/v1"), "/auth/login"), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            });
+            const data = await response.json();
+            const infoUser = data === null || data === void 0 ? void 0 : (_data_data = data.data) === null || _data_data === void 0 ? void 0 : _data_data.user;
+            const refreshToken = data === null || data === void 0 ? void 0 : (_data_data1 = data.data) === null || _data_data1 === void 0 ? void 0 : _data_data1.refreshToken;
+            if (!response.ok) {
+                dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(false));
+                return;
+            }
+            localStorage.setItem("authToken", data === null || data === void 0 ? void 0 : (_data_data2 = data.data) === null || _data_data2 === void 0 ? void 0 : _data_data2.accessToken);
+            localStorage.setItem("refreshToken", data === null || data === void 0 ? void 0 : (_data_data3 = data.data) === null || _data_data3 === void 0 ? void 0 : _data_data3.refreshToken);
+            localStorage.setItem("users", JSON.stringify(infoUser));
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(false));
+            if (data) {
+                var _data_data4;
+                getUserByID(infoUser.id, refreshToken, data === null || data === void 0 ? void 0 : (_data_data4 = data.data) === null || _data_data4 === void 0 ? void 0 : _data_data4.accessToken);
+            }
+            return data;
+        } catch (e) {
+            console.error(e);
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(false));
+        }
+    };
+    const logOut = async ()=>{
+        //   if (user) {
+        //     storeUserInfo({ ...user, status: "inactive" });
+        // }
+        // return authClient.signOut().then((res) => {
+        //     if (res?.data?.success) redirect("/login");
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(true));
+        let valueReFreshToke = localStorage.getItem('refreshToken');
+        let payload = {
+            refreshToken: valueReFreshToke
+        };
+        const response = await fetch("".concat(("TURBOPACK compile-time value", "http://10.0.13.77:4000/api/v1"), "/auth/logout"), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer ".concat((user === null || user === void 0 ? void 0 : user.token) || authToken)
+            },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("users");
+            localStorage.removeItem("refreshToken");
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["storeUser"])({
+                ban_reason: "",
+                banned: false,
+                createdAt: "",
+                email: "",
+                email_verified: false,
+                id: "",
+                image: "",
+                name: "",
+                role: "",
+                updatedAt: "",
+                refreshToken: ""
+            }));
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(false));
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["redirect"])("/login");
+        }
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setLoading"])(false));
+    };
+    return {
+        loading,
+        user,
+        logIn,
+        logOut,
+        storeUserInfo
+    };
+};
+_s(useAuth, "pE2VYh5PnkCWGA7oKHWZzZCa+2I=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"]
+    ];
+});
+;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/utils.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "cn",
+    ()=>cn,
+    "formatDate",
+    ()=>formatDate,
+    "parseISODateOnly",
+    ()=>parseISODateOnly
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/clsx/dist/clsx.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/tailwind-merge/dist/bundle-mjs.mjs [app-client] (ecmascript)");
+;
+;
+function cn() {
+    for(var _len = arguments.length, inputs = new Array(_len), _key = 0; _key < _len; _key++){
+        inputs[_key] = arguments[_key];
+    }
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["twMerge"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["clsx"])(inputs));
+}
+const formatDate = function(date) {
+    let format = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "yyyy-mm-dd";
+    if (!date) return "";
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    if (format === "yyyy/mm/dd") return "".concat(year, "/").concat(month, "/").concat(day);
+    return "".concat(year, "-").concat(month, "-").concat(day);
+};
+function parseISODateOnly(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(y, m - 1, d);
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "NavigationMenu",
+    ()=>NavigationMenu,
+    "NavigationMenuContent",
+    ()=>NavigationMenuContent,
+    "NavigationMenuIndicator",
+    ()=>NavigationMenuIndicator,
+    "NavigationMenuItem",
+    ()=>NavigationMenuItem,
+    "NavigationMenuLink",
+    ()=>NavigationMenuLink,
+    "NavigationMenuList",
+    ()=>NavigationMenuList,
+    "NavigationMenuTrigger",
+    ()=>NavigationMenuTrigger,
+    "NavigationMenuViewport",
+    ()=>NavigationMenuViewport,
+    "navigationMenuTriggerStyle",
+    ()=>navigationMenuTriggerStyle
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@radix-ui/react-navigation-menu/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/class-variance-authority/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDownIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/chevron-down.js [app-client] (ecmascript) <export default as ChevronDownIcon>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
+;
+;
+;
+;
+;
+function NavigationMenu(param) {
+    let { className, children, viewport = true, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Root"], {
+        "data-slot": "navigation-menu",
+        "data-viewport": viewport,
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("group/navigation-menu relative flex max-w-max flex-1 items-center justify-center", className),
+        ...props,
+        children: [
+            children,
+            viewport && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(NavigationMenuViewport, {}, void 0, false, {
+                fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+                lineNumber: 27,
+                columnNumber: 20
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 17,
+        columnNumber: 5
+    }, this);
+}
+_c = NavigationMenu;
+function NavigationMenuList(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["List"], {
+        "data-slot": "navigation-menu-list",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("group flex flex-1 list-none items-center justify-center gap-1", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 37,
+        columnNumber: 5
+    }, this);
+}
+_c1 = NavigationMenuList;
+function NavigationMenuItem(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Item"], {
+        "data-slot": "navigation-menu-item",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 53,
+        columnNumber: 5
+    }, this);
+}
+_c2 = NavigationMenuItem;
+const navigationMenuTriggerStyle = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cva"])("group inline-flex h-9 w-max items-center justify-center rounded-md " + "bg-secondary text-[#000000] px-4 py-2 text-sm font-medium " + "hover:bg-[#000000] hover:text-secondary " + "focus:bg-[#000000] focus:text-secondary " + "disabled:pointer-events-none disabled:opacity-50 " + "data-[state=open]:bg-[#000000] data-[state=open]:text-secondary " + "focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] " + "focus-visible:ring-[3px] focus-visible:outline-1");
+function NavigationMenuTrigger(param) {
+    let { className, children, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Trigger"], {
+        "data-slot": "navigation-menu-trigger",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(navigationMenuTriggerStyle(), "group", className),
+        ...props,
+        children: [
+            children,
+            " ",
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDownIcon$3e$__["ChevronDownIcon"], {
+                className: "relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180",
+                "aria-hidden": "true"
+            }, void 0, false, {
+                fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+                lineNumber: 85,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 79,
+        columnNumber: 5
+    }, this);
+}
+_c3 = NavigationMenuTrigger;
+function NavigationMenuContent(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Content"], {
+        "data-slot": "navigation-menu-content",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 top-0 left-0 w-full p-2 pr-2.5 md:absolute md:w-auto", "group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-md group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:duration-200 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 98,
+        columnNumber: 5
+    }, this);
+}
+_c4 = NavigationMenuContent;
+function NavigationMenuViewport(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("absolute top-full left-0 isolate z-50 flex justify-center"),
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Viewport"], {
+            "data-slot": "navigation-menu-viewport",
+            className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("origin-top-center bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--radix-navigation-menu-viewport-width)]", className),
+            ...props
+        }, void 0, false, {
+            fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+            lineNumber: 120,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 115,
+        columnNumber: 5
+    }, this);
+}
+_c5 = NavigationMenuViewport;
+function NavigationMenuLink(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Link"], {
+        "data-slot": "navigation-menu-link",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(// Base styles
+        "relative flex flex-col gap-1 rounded-md px-4 py-2 text-sm font-medium transition-all duration-300 outline-none", "text-[#000000]", // Hover effects - smooth underline animation
+        "before:content-[''] before:absolute before:bottom-1 before:left-1/2 before:-translate-x-1/2", "before:w-0 before:h-0.5 before:bg-[#000000] before:transition-all before:duration-300 before:ease-out", "hover:before:w-[calc(100%-2rem)]", "hover:font-semibold hover:text-[#000000]", // Focus effects
+        "focus:before:w-[calc(100%-2rem)] focus:font-semibold focus:text-[#000000]", // Active state - permanent underline for current page
+        "data-[active=true]:before:w-[calc(100%-2rem)] data-[active=true]:before:bg-[#000000]", "data-[active=true]:font-bold data-[active=true]:text-[#000000]", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 137,
+        columnNumber: 5
+    }, this);
+}
+_c6 = NavigationMenuLink;
+function NavigationMenuIndicator(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$navigation$2d$menu$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Indicator"], {
+        "data-slot": "navigation-menu-indicator",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden", className),
+        ...props,
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "bg-border relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md"
+        }, void 0, false, {
+            fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+            lineNumber: 177,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx",
+        lineNumber: 169,
+        columnNumber: 5
+    }, this);
+}
+_c7 = NavigationMenuIndicator;
+;
+var _c, _c1, _c2, _c3, _c4, _c5, _c6, _c7;
+__turbopack_context__.k.register(_c, "NavigationMenu");
+__turbopack_context__.k.register(_c1, "NavigationMenuList");
+__turbopack_context__.k.register(_c2, "NavigationMenuItem");
+__turbopack_context__.k.register(_c3, "NavigationMenuTrigger");
+__turbopack_context__.k.register(_c4, "NavigationMenuContent");
+__turbopack_context__.k.register(_c5, "NavigationMenuViewport");
+__turbopack_context__.k.register(_c6, "NavigationMenuLink");
+__turbopack_context__.k.register(_c7, "NavigationMenuIndicator");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/shadcn/components/ui/button.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Button",
+    ()=>Button,
+    "buttonVariants",
+    ()=>buttonVariants
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@radix-ui/react-slot/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/class-variance-authority/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
+;
+;
+;
+;
+const buttonVariants = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cva"])("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive", {
+    variants: {
+        variant: {
+            default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+            destructive: "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+            outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+            secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+            ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+            link: "text-primary underline-offset-4 hover:underline"
+        },
+        size: {
+            default: "h-9 px-4 py-2 has-[>svg]:px-3",
+            sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+            lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+            icon: "size-9"
+        }
+    },
+    defaultVariants: {
+        variant: "default",
+        size: "default"
+    }
+});
+function Button(param) {
+    let { className, variant, size, asChild = false, ...props } = param;
+    const Comp = asChild ? __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Slot"] : "button";
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Comp, {
+        "data-slot": "button",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(buttonVariants({
+            variant,
+            size,
+            className
+        })),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/button.tsx",
+        lineNumber: 51,
+        columnNumber: 5
+    }, this);
+}
+_c = Button;
+;
+var _c;
+__turbopack_context__.k.register(_c, "Button");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/asset/Logo.png (static in ecmascript)", ((__turbopack_context__) => {
+
+__turbopack_context__.v("/_next/static/media/Logo.7bd3c78c.png");}),
+"[project]/src/component/_backoffice/asset/Logo.png.mjs { IMAGE => \"[project]/src/component/_backoffice/asset/Logo.png (static in ecmascript)\" } [app-client] (structured image object with data url, ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png__$28$static__in__ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/asset/Logo.png (static in ecmascript)");
+;
+const __TURBOPACK__default__export__ = {
+    src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png__$28$static__in__ecmascript$29$__["default"],
+    width: 780,
+    height: 685,
+    blurWidth: 8,
+    blurHeight: 7,
+    blurDataURL: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAHCAYAAAA1WQxeAAAAl0lEQVR42k3OQQqCQBTG8TcvqEVRUAQRQQRCm6Bd0aYbtG9VW3EluBX0EC68igdQwZ338BD+R0bwwY/3zZsZZkREFsYYDweygcLDDXPIks0UBe54o2Ie2sviascwR6mqMT2yF2VSyvBL7+gNnu65oWYMPvQWCTlDTX6Mh7YMAvzJG+zJPn7klT2wZnHm7Ssu7qMn8ot+7AGKGg6z3ppNwAAAAABJRU5ErkJggg=="
+};
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/shadcn/components/ui/avatar.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Avatar",
+    ()=>Avatar,
+    "AvatarFallback",
+    ()=>AvatarFallback,
+    "AvatarImage",
+    ()=>AvatarImage
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$avatar$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@radix-ui/react-avatar/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
+"use client";
+;
+;
+;
+function Avatar(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$avatar$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Root"], {
+        "data-slot": "avatar",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex size-8 shrink-0 overflow-hidden rounded-full", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/avatar.tsx",
+        lineNumber: 13,
+        columnNumber: 5
+    }, this);
+}
+_c = Avatar;
+function AvatarImage(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$avatar$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Image"], {
+        "data-slot": "avatar-image",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("aspect-square size-full", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/avatar.tsx",
+        lineNumber: 29,
+        columnNumber: 5
+    }, this);
+}
+_c1 = AvatarImage;
+function AvatarFallback(param) {
+    let { className, ...props } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$avatar$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fallback"], {
+        "data-slot": "avatar-fallback",
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("bg-muted flex size-full items-center justify-center rounded-full", className),
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/avatar.tsx",
+        lineNumber: 42,
+        columnNumber: 5
+    }, this);
+}
+_c2 = AvatarFallback;
+;
+var _c, _c1, _c2;
+__turbopack_context__.k.register(_c, "Avatar");
+__turbopack_context__.k.register(_c1, "AvatarImage");
+__turbopack_context__.k.register(_c2, "AvatarFallback");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/layout/AppHeader.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>AppHeader
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$navigation$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/shadcn/components/ui/navigation-menu.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOutIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/log-out.js [app-client] (ecmascript) <export default as LogOutIcon>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/shadcn/components/ui/button.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hook/useAuth.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png$2e$mjs__$7b$__IMAGE__$3d3e$__$225b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png__$28$static__in__ecmascript$2922$__$7d$__$5b$app$2d$client$5d$__$28$structured__image__object__with__data__url$2c$__ecmascript$29$__ = __turbopack_context__.i('[project]/src/component/_backoffice/asset/Logo.png.mjs { IMAGE => "[project]/src/component/_backoffice/asset/Logo.png (static in ecmascript)" } [app-client] (structured image object with data url, ecmascript)');
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/shadcn/components/ui/avatar.tsx [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+'use client';
+;
+;
+;
+;
+;
+;
+;
+;
+;
+function AppHeader(param) {
+    let { routes } = param;
+    _s();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const { logOut, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
+        className: "w-full flex justify-between items-center bg-secondary text-[#000000] px-20 h-16 shadow-md",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "flex items-center gap-10",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                        href: "#",
+                        className: "flex items-center gap-2 ",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png$2e$mjs__$7b$__IMAGE__$3d3e$__$225b$project$5d2f$src$2f$component$2f$_backoffice$2f$asset$2f$Logo$2e$png__$28$static__in__ecmascript$2922$__$7d$__$5b$app$2d$client$5d$__$28$structured__image__object__with__data__url$2c$__ecmascript$29$__["default"],
+                            alt: "XT BackOffice Logo",
+                            className: "size-16 object-contain  fill-black",
+                            priority: true
+                        }, void 0, false, {
+                            fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                            lineNumber: 27,
+                            columnNumber: 21
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                        lineNumber: 26,
+                        columnNumber: 17
+                    }, this),
+                    user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center gap-2 bg-white text-black px-4 py-1 rounded-full shadow-md hover:shadow-lg transition-all duration-200",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Avatar"], {
+                                className: "h-8 w-8",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AvatarImage"], {
+                                        src: typeof (user === null || user === void 0 ? void 0 : user.image) === "string" ? user.image : "",
+                                        alt: user.name || "User"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                        lineNumber: 37,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AvatarFallback"], {
+                                        className: "bg-secondary font-black",
+                                        children: user.name ? user.name.split(" ").map((n)=>n[0]).join("").toUpperCase() : "U"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                        lineNumber: 44,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                lineNumber: 36,
+                                columnNumber: 25
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "font-medium truncate max-w-fit",
+                                children: [
+                                    "Welcome, ",
+                                    user.name || "User"
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                lineNumber: 54,
+                                columnNumber: 25
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                        lineNumber: 35,
+                        columnNumber: 21
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                lineNumber: 25,
+                columnNumber: 13
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$navigation$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavigationMenu"], {
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$navigation$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavigationMenuList"], {
+                        children: routes.map((route, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$navigation$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavigationMenuItem"], {
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$navigation$2d$menu$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NavigationMenuLink"], {
+                                    asChild: true,
+                                    "data-active": pathname.includes(route.path),
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                        href: route.path,
+                                        children: route.label
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                        lineNumber: 71,
+                                        columnNumber: 37
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                    lineNumber: 67,
+                                    columnNumber: 33
+                                }, this)
+                            }, index, false, {
+                                fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                                lineNumber: 66,
+                                columnNumber: 29
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                        lineNumber: 63,
+                        columnNumber: 17
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                        className: "cursor-pointer ml-4",
+                        onClick: logOut,
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOutIcon$3e$__["LogOutIcon"], {}, void 0, false, {
+                            fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                            lineNumber: 80,
+                            columnNumber: 74
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                        lineNumber: 80,
+                        columnNumber: 17
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+                lineNumber: 62,
+                columnNumber: 13
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/component/_backoffice/layout/AppHeader.tsx",
+        lineNumber: 24,
+        columnNumber: 9
+    }, this);
+}
+_s(AppHeader, "aMNr2s5sktQsCXL5vh2xmAk2afc=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
+    ];
+});
+_c = AppHeader;
+var _c;
+__turbopack_context__.k.register(_c, "AppHeader");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/shadcn/components/ui/sonner.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Toaster",
+    ()=>Toaster
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$themes$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next-themes/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+"use client";
+;
+;
+const Toaster = (param)=>{
+    let { ...props } = param;
+    _s();
+    const { theme = "system" } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$themes$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useTheme"])();
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Toaster"], {
+        theme: theme,
+        className: "toaster group",
+        style: {
+            "--normal-bg": "var(--popover)",
+            "--normal-text": "var(--popover-foreground)",
+            "--normal-border": "var(--border)"
+        },
+        ...props
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/shadcn/components/ui/sonner.tsx",
+        lineNumber: 10,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s(Toaster, "EriOrahfenYKDCErPq+L6926Dw4=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$themes$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useTheme"]
+    ];
+});
+_c = Toaster;
+;
+var _c;
+__turbopack_context__.k.register(_c, "Toaster");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/provider/type-route.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Route",
+    ()=>Route
+]);
+const Route = [
+    {
+        label: 'Customer',
+        path: '/customer'
+    },
+    {
+        label: 'Case',
+        path: '/case'
+    },
+    {
+        label: 'Staff',
+        path: '/staff'
+    },
+    {
+        label: 'Analytics',
+        path: '/analytics'
+    }
+];
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/hook/useListenAction.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var _s = __turbopack_context__.k.signature();
+'use client';
+;
+const useListenAction = function() {
+    let timeout = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 5 * 60 * 1000;
+    _s();
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "useListenAction.useEffect": ()=>{
+            let timer;
+            const resetTimer = {
+                "useListenAction.useEffect.resetTimer": ()=>{
+                    clearTimeout(timer);
+                    timer = setTimeout({
+                        "useListenAction.useEffect.resetTimer": ()=>{
+                            sessionStorage.clear();
+                        // window.location.reload();
+                        }
+                    }["useListenAction.useEffect.resetTimer"], timeout);
+                }
+            }["useListenAction.useEffect.resetTimer"];
+            // Gắn sự kiện
+            const events = [
+                "mousemove",
+                "keydown",
+                "click",
+                "scroll"
+            ];
+            events.forEach({
+                "useListenAction.useEffect": (event)=>window.addEventListener(event, resetTimer)
+            }["useListenAction.useEffect"]);
+            resetTimer(); // reset timer  load
+            return ({
+                "useListenAction.useEffect": ()=>{
+                    events.forEach({
+                        "useListenAction.useEffect": (event)=>window.removeEventListener(event, resetTimer)
+                    }["useListenAction.useEffect"]);
+                    clearTimeout(timer);
+                }
+            })["useListenAction.useEffect"];
+        }
+    }["useListenAction.useEffect"], [
+        timeout
+    ]);
+};
+_s(useListenAction, "OD7bBpZva5O2jO+Puf00hKivP7c=");
+const __TURBOPACK__default__export__ = useListenAction;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/provider/LayoutProvider.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>LayoutProvider
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hook/useAuth.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$layout$2f$AppHeader$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/layout/AppHeader.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$sonner$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/shadcn/components/ui/sonner.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$type$2d$route$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/provider/type-route.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useListenAction$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hook/useListenAction.ts [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+'use client';
+;
+;
+;
+;
+;
+;
+;
+function safeGetUsers() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    try {
+        const s = window.localStorage.getItem("users");
+        return s ? JSON.parse(s) : null;
+    } catch (e) {
+        return null;
+    }
+}
+function LayoutProvider(param) {
+    let { children } = param;
+    _s();
+    const [dataLocal, setDataLocal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [hydrated, setHydrated] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const { storeUserInfo, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useListenAction$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])(60 * 60 * 1000); // an hour
+    // Only read local storage on client
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LayoutProvider.useEffect": ()=>{
+            if (!pathname.includes('login')) {
+                const storedData = safeGetUsers();
+                const token = ("TURBOPACK compile-time truthy", 1) ? window.localStorage.getItem('authToken') : "TURBOPACK unreachable";
+                if (storedData) {
+                    storeUserInfo({
+                        ...storedData,
+                        token
+                    });
+                    setDataLocal(storedData);
+                } else {
+                    setDataLocal(null);
+                    window.localStorage.removeItem('users');
+                    window.localStorage.removeItem('authToken');
+                }
+            }
+            setHydrated(true);
+        }
+    }["LayoutProvider.useEffect"], [
+        pathname
+    ]);
+    const userRole = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "LayoutProvider.useMemo[userRole]": ()=>{
+            if (user === null || user === void 0 ? void 0 : user.role) return user.role;
+            if (dataLocal === null || dataLocal === void 0 ? void 0 : dataLocal.role) return dataLocal.role;
+            return null;
+        }
+    }["LayoutProvider.useMemo[userRole]"], [
+        user === null || user === void 0 ? void 0 : user.role,
+        dataLocal === null || dataLocal === void 0 ? void 0 : dataLocal.role
+    ]);
+    const visibleRoutes = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "LayoutProvider.useMemo[visibleRoutes]": ()=>{
+            if (userRole === "manager" || (userRole === null || userRole === void 0 ? void 0 : userRole.startsWith("leader"))) return __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$type$2d$route$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Route"]; // manager sees all
+            return __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$type$2d$route$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Route"].filter({
+                "LayoutProvider.useMemo[visibleRoutes]": (r)=>r.path === "/case"
+            }["LayoutProvider.useMemo[visibleRoutes]"]); // everyone else sees only /case
+        }
+    }["LayoutProvider.useMemo[visibleRoutes]"], [
+        userRole
+    ]);
+    // Redirect client-side
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "LayoutProvider.useEffect": ()=>{
+            if (userRole === 'exec_crm' && pathname === '/customer') {
+                router.push('/case');
+            }
+        }
+    }["LayoutProvider.useEffect"], [
+        userRole,
+        pathname,
+        router
+    ]);
+    // Don't render until hydration complete
+    if (!hydrated) return null;
+    if (pathname === "/login") {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+            children: [
+                children,
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$sonner$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Toaster"], {
+                    position: "top-center",
+                    richColors: true,
+                    closeButton: true,
+                    visibleToasts: 1
+                }, void 0, false, {
+                    fileName: "[project]/src/component/_backoffice/provider/LayoutProvider.tsx",
+                    lineNumber: 68,
+                    columnNumber: 13
+                }, this)
+            ]
+        }, void 0, true);
+    }
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$layout$2f$AppHeader$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                routes: visibleRoutes
+            }, void 0, false, {
+                fileName: "[project]/src/component/_backoffice/provider/LayoutProvider.tsx",
+                lineNumber: 74,
+                columnNumber: 13
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "w-11/12 mx-auto mt-3",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$shadcn$2f$components$2f$ui$2f$sonner$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Toaster"], {
+                        position: "top-center",
+                        richColors: true,
+                        closeButton: true,
+                        visibleToasts: 1
+                    }, void 0, false, {
+                        fileName: "[project]/src/component/_backoffice/provider/LayoutProvider.tsx",
+                        lineNumber: 76,
+                        columnNumber: 17
+                    }, this),
+                    children
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/component/_backoffice/provider/LayoutProvider.tsx",
+                lineNumber: 75,
+                columnNumber: 13
+            }, this)
+        ]
+    }, void 0, true);
+}
+_s(LayoutProvider, "/P+Lc0265yBVC+de5usK0QA0s2w=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useAuth$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useListenAction$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]
+    ];
+});
+_c = LayoutProvider;
+var _c;
+__turbopack_context__.k.register(_c, "LayoutProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/staff.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "setIsLoading",
+    ()=>setIsLoading,
+    "staffSlice",
+    ()=>staffSlice,
+    "storeStaff",
+    ()=>storeStaff
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    isLoading: false,
+    staff: []
+};
+const staffSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: "staff",
+    initialState,
+    reducers: {
+        setIsLoading: (state, action)=>{
+            state.isLoading = action.payload;
+        },
+        storeStaff: (state, action)=>{
+            state.staff = action.payload;
+        }
+    }
+});
+const { setIsLoading, storeStaff } = staffSlice.actions;
+const __TURBOPACK__default__export__ = staffSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/customerSlice.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "customerSlice",
+    ()=>customerSlice,
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "setIsLoading",
+    ()=>setIsLoading,
+    "setParams",
+    ()=>setParams,
+    "storeActiveCustomer",
+    ()=>storeActiveCustomer,
+    "storeCustomer",
+    ()=>storeCustomer
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    isLoading: false,
+    contacts: [],
+    activeContact: {
+        contact: {
+            contact_id: "",
+            full_name: "",
+            tel: "",
+            email: "",
+            contact_type: "",
+            last_call_status: ""
+        },
+        alias: [],
+        call_logs: [],
+        contact_points: []
+    },
+    params: {}
+};
+const customerSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: 'customer',
+    initialState,
+    reducers: {
+        setIsLoading: (state, action)=>{
+            state.isLoading = action.payload;
+        },
+        storeCustomer: (state, action)=>{
+            state.contacts = action.payload;
+        },
+        storeActiveCustomer: (state, action)=>{
+            state.activeContact = action.payload;
+        },
+        setParams: (state, action)=>{
+            state.params = {
+                ...state.params,
+                ...action.payload
+            };
+        }
+    }
+});
+const { setIsLoading, storeCustomer, storeActiveCustomer, setParams } = customerSlice.actions;
+const __TURBOPACK__default__export__ = customerSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/caseClice.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "caseReducer",
+    ()=>caseReducer,
+    "caseSlice",
+    ()=>caseSlice,
+    "setIsLoading",
+    ()=>setIsLoading,
+    "setParams",
+    ()=>setParams,
+    "storeActiveCae",
+    ()=>storeActiveCae,
+    "storeCase",
+    ()=>storeCase
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    isLoading: false,
+    cases: [],
+    activeCase: {
+        id: "",
+        alias_id: "",
+        description: "",
+        status: "",
+        priority: "",
+        created_at: "",
+        updated_at: "",
+        alias: "",
+        life_cycle: "",
+        user_id: "",
+        user_email: "",
+        user_name: "",
+        user_role: ""
+    },
+    params: {}
+};
+const caseSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: "case",
+    initialState,
+    reducers: {
+        setIsLoading: (state, action)=>{
+            state.isLoading = action.payload;
+        },
+        storeCase: (state, action)=>{
+            state.cases = action.payload;
+        },
+        storeActiveCae: (state, action)=>{
+            state.activeCase = action.payload;
+        },
+        setParams: (state, action)=>{
+            state.params = {
+                ...state.params,
+                ...action.payload
+            };
+        }
+    }
+});
+const { setIsLoading, storeCase, setParams, storeActiveCae } = caseSlice.actions;
+const caseReducer = caseSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/aliasSlice.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "aliasSlice",
+    ()=>aliasSlice,
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "setIsLoading",
+    ()=>setIsLoading,
+    "setParams",
+    ()=>setParams,
+    "storeAlias",
+    ()=>storeAlias,
+    "storeDepositAlias",
+    ()=>storeDepositAlias,
+    "storeactiveAlias",
+    ()=>storeactiveAlias
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    isLoading: false,
+    aliases: [],
+    deposit: [],
+    activeAlias: {
+        alias: {
+            alias_id: "",
+            contact_id: "",
+            alias: "",
+            alias_status: "",
+            life_cycle: "",
+            register_date: "",
+            last_call_at: "",
+            last_call_status: "",
+            has_deposited: true,
+            last_deposit: "",
+            note: "",
+            freeze_count: "",
+            created_at: "",
+            updated_at: "",
+            vip_status: [],
+            platform: []
+        },
+        call_logs: []
+    },
+    params: {}
+};
+const aliasSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: 'alias',
+    initialState,
+    reducers: {
+        setIsLoading: (state, action)=>{
+            state.isLoading = action.payload;
+        },
+        storeAlias: (state, action)=>{
+            state.aliases = action.payload;
+        },
+        storeactiveAlias: (state, action)=>{
+            state.activeAlias = action.payload;
+        },
+        storeDepositAlias: (state, action)=>{
+            state.deposit = action.payload;
+        },
+        setParams: (state, action)=>{
+            state.params = {
+                ...state.params,
+                ...action.payload
+            };
+        }
+    }
+});
+const { setIsLoading, storeAlias, storeactiveAlias, setParams, storeDepositAlias } = aliasSlice.actions;
+const __TURBOPACK__default__export__ = aliasSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/store/platFormSlice.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "PlatformSlice",
+    ()=>PlatformSlice,
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "setIsLoading",
+    ()=>setIsLoading,
+    "setParams",
+    ()=>setParams,
+    "storePlatform",
+    ()=>storePlatform
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+;
+const initialState = {
+    isLoading: false,
+    platformes: [],
+    params: {}
+};
+const PlatformSlice = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["createSlice"])({
+    name: 'platform',
+    initialState,
+    reducers: {
+        setIsLoading: (state, action)=>{
+            state.isLoading = action.payload;
+        },
+        storePlatform: (state, action)=>{
+            state.platformes = action.payload;
+        },
+        setParams: (state, action)=>{
+            state.params = {
+                ...state.params,
+                ...action.payload
+            };
+        }
+    }
+});
+const { setIsLoading, storePlatform, setParams } = PlatformSlice.actions;
+const __TURBOPACK__default__export__ = PlatformSlice.reducer;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/redux/store.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "store",
+    ()=>store
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs [app-client] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/authSlice.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$staff$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/staff.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/customerSlice.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$caseClice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/caseClice.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$aliasSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/aliasSlice.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$platFormSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/platFormSlice.ts [app-client] (ecmascript)");
+;
+;
+;
+;
+;
+;
+;
+const store = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$reduxjs$2f$toolkit$2f$dist$2f$redux$2d$toolkit$2e$modern$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["configureStore"])({
+    reducer: {
+        auth: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$authSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
+        staff: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$staff$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
+        customer: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
+        case: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$caseClice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["caseReducer"],
+        alias: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$aliasSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
+        platform: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$platFormSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]
+    }
+});
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/provider/StoreProvider.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>StoreProvider
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-redux/dist/react-redux.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$store$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/redux/store.ts [app-client] (ecmascript)");
+'use client';
+;
+;
+;
+function StoreProvider(param) {
+    let { children } = param;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$redux$2f$dist$2f$react$2d$redux$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Provider"], {
+        store: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$store$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["store"],
+        children: children
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/provider/StoreProvider.tsx",
+        lineNumber: 7,
+        columnNumber: 12
+    }, this);
+}
+_c = StoreProvider;
+var _c;
+__turbopack_context__.k.register(_c, "StoreProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/api/call-log.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "reqCreateCallLog",
+    ()=>reqCreateCallLog
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/helper/apiRequest.ts [app-client] (ecmascript)");
+;
+const reqCreateCallLog = async (payload)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/call-log", {
+        method: "POST",
+        body: payload
+    });
+console.log();
+;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/_backoffice/provider/CallProvider.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "CallProvider",
+    ()=>CallProvider,
+    "useGlobalCall",
+    ()=>useGlobalCall
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$call$2d$log$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/api/call-log.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
+'use client';
+;
+;
+;
+const CallContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])(undefined);
+const useGlobalCall = ()=>{
+    _s();
+    const ctx = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(CallContext);
+    if (!ctx) throw new Error("useGlobalCall must be used inside CallProvider");
+    return ctx;
+};
+_s(useGlobalCall, "/dMy7t63NXD4eYACoT93CePwGrg=");
+const CallProvider = (param)=>{
+    let { children } = param;
+    _s1();
+    const [isCalling, setIsCalling] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [startTime, setStartTime] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [elapsed, setElapsed] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("00:00:00");
+    const [statusTab, setStatusTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [contactTab, setContactTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [callNote, setCallNote] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    // Timer
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "CallProvider.useEffect": ()=>{
+            let interval;
+            if (isCalling && startTime) {
+                interval = setInterval({
+                    "CallProvider.useEffect": ()=>{
+                        const diff = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
+                        const h = Math.floor(diff / 3600);
+                        const m = Math.floor(diff % 3600 / 60);
+                        const s = diff % 60;
+                        setElapsed("".concat(h.toString().padStart(2, '0'), ":").concat(m.toString().padStart(2, '0'), ":").concat(s.toString().padStart(2, '0')));
+                    }
+                }["CallProvider.useEffect"], 1000);
+            }
+            return ({
+                "CallProvider.useEffect": ()=>clearInterval(interval)
+            })["CallProvider.useEffect"];
+        }
+    }["CallProvider.useEffect"], [
+        isCalling,
+        startTime
+    ]);
+    const startCall = ()=>{
+        setIsCalling(true);
+        setStartTime(new Date());
+        setElapsed("00:00:00");
+    };
+    const endCall = async (args)=>{
+        if (!isCalling || !startTime) return null;
+        const sTab = (args === null || args === void 0 ? void 0 : args.statusTab) || statusTab;
+        const cTab = (args === null || args === void 0 ? void 0 : args.contactTab) || contactTab;
+        const note = (args === null || args === void 0 ? void 0 : args.callNote) || callNote;
+        if (!sTab || !cTab) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Please select Status and Contact method before ending the call!");
+            return null;
+        }
+        const now = new Date();
+        const log = {
+            start: startTime.toLocaleTimeString(),
+            end: now.toLocaleTimeString(),
+            duration: elapsed,
+            statusTab: sTab,
+            contactTab: cTab,
+            note
+        };
+        try {
+            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$call$2d$log$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["reqCreateCallLog"])({
+                alias_id: (args === null || args === void 0 ? void 0 : args.aliasId) || 0,
+                point_id: (args === null || args === void 0 ? void 0 : args.pointId) || 0,
+                call_status: sTab,
+                call_note: note || "",
+                call_start_at: startTime.toISOString(),
+                call_end_at: now.toISOString(),
+                next_action_at: null
+            });
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Call log submitted.");
+        } catch (err) {
+            alert("Error submitting call log.");
+        }
+        setIsCalling(false);
+        setStartTime(null);
+        setElapsed("00:00:00");
+        setStatusTab("");
+        setContactTab("");
+        setCallNote("");
+        return log;
+    };
+    // Auto end call on page unload or reload
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "CallProvider.useEffect": ()=>{
+            const handleUnload = {
+                "CallProvider.useEffect.handleUnload": async (e)=>{
+                    if (isCalling) {
+                        await endCall();
+                        e.preventDefault();
+                        // Needed for browser prompt, TypeScript will warn
+                        e.returnValue = 'hello';
+                    }
+                }
+            }["CallProvider.useEffect.handleUnload"];
+            window.addEventListener('beforeunload', handleUnload);
+            return ({
+                "CallProvider.useEffect": ()=>window.removeEventListener('beforeunload', handleUnload)
+            })["CallProvider.useEffect"];
+        }
+    }["CallProvider.useEffect"], [
+        isCalling,
+        startTime,
+        statusTab,
+        contactTab,
+        callNote
+    ]);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CallContext.Provider, {
+        value: {
+            isCalling,
+            startTime,
+            elapsed,
+            statusTab,
+            contactTab,
+            callNote,
+            startCall,
+            endCall,
+            setStatusTab,
+            setContactTab,
+            setCallNote
+        },
+        children: children
+    }, void 0, false, {
+        fileName: "[project]/src/component/_backoffice/provider/CallProvider.tsx",
+        lineNumber: 144,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s1(CallProvider, "kYYocJlmxQ/Jd6LWURtihujd7Os=");
+_c = CallProvider;
+var _c;
+__turbopack_context__.k.register(_c, "CallProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/api/contact.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "reqGetAllCustomer",
+    ()=>reqGetAllCustomer,
+    "reqGetCustomerById",
+    ()=>reqGetCustomerById,
+    "reqUploadDailyFile",
+    ()=>reqUploadDailyFile,
+    "updateCustomerById",
+    ()=>updateCustomerById
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/helper/apiRequest.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2f$type$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/type/type.ts [app-client] (ecmascript)");
+;
+;
+const reqGetAllCustomer = async (params)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])('/contacts', {
+        method: 'GET',
+        queryParams: {
+            limit: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2f$type$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["limitAPI"],
+            ...params
+        }
+    });
+const reqGetCustomerById = async (id)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/contacts/".concat(id));
+const updateCustomerById = async (id, data)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/contacts/".concat(id), {
+        method: "PUT",
+        body: data
+    });
+const reqUploadDailyFile = async (formData)=>await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$helper$2f$apiRequest$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiRequest"])("/contacts/upload-daily-file", {
+        method: "POST",
+        body: formData
+    });
+;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/hook/useCustomer.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "useCustomer",
+    ()=>useCustomer
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/redux/hook.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/store/customerSlice.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$contact$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/api/contact.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [app-client] (ecmascript)");
+var _s = __turbopack_context__.k.signature();
+;
+;
+;
+;
+const useCustomer = ()=>{
+    _s();
+    const dispatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"])();
+    const { isLoading, contacts, activeContact, params } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"])({
+        "useCustomer.useAppSelector": (state)=>state.customer
+    }["useCustomer.useAppSelector"]);
+    const getCustomer = async ()=>{
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(true));
+        try {
+            const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$contact$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["reqGetAllCustomer"])(params.query);
+            const contract = res.data.contacts;
+            contract.forEach((item)=>{
+                item.alias_name = item.alias ? item.alias.map((user)=>user.alias).toString() : '';
+            });
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["storeCustomer"])(contract));
+        } catch (error) {
+            console.error(error);
+        } finally{
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(false));
+        }
+    };
+    const getCustomerById = async (id)=>{
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(true));
+        try {
+            const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$contact$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["reqGetCustomerById"])(id);
+            if (!res.data) {
+                return null;
+            }
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["storeActiveCustomer"])(res.data));
+            return res.data;
+        } catch (err) {
+            var _err_response;
+            if (((_err_response = err.response) === null || _err_response === void 0 ? void 0 : _err_response.status) && err.response.status !== 404) {
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Failed to fetch customer details.");
+            }
+            return null;
+        } finally{
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(false));
+        }
+    };
+    const updateCustomer = async (contactId, payload)=>{
+        if (!contactId) throw new Error("Invalid customer ID");
+        dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(true));
+        try {
+            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$contact$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["updateCustomerById"])(Number(contactId), payload);
+            if (Number(activeContact.contact.contact_id === Number(contactId))) {
+                await getCustomerById(Number(contactId));
+            }
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Customer updated successfully!");
+        } catch (error) {
+            console.error(error);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Failed to update customer.");
+            throw error;
+        } finally{
+            dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setIsLoading"])(false));
+        }
+    };
+    const updateParams = (newParams)=>dispatch((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$store$2f$customerSlice$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["setParams"])(newParams));
+    return {
+        isLoading,
+        contacts,
+        activeContact,
+        params,
+        getCustomer,
+        getCustomerById,
+        updateCustomer,
+        updateParams
+    };
+};
+_s(useCustomer, "PjbGjQhO5OAZKcS7eolRvBxGmYE=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppDispatch"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$redux$2f$hook$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAppSelector"]
+    ];
+});
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/component/module/customer/component/body/floatingcall.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "FloatingEndCall",
+    ()=>FloatingEndCall
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$CallProvider$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/component/_backoffice/provider/CallProvider.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useCustomer$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hook/useCustomer.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+'use client';
+;
+;
+;
+const FloatingEndCall = ()=>{
+    _s();
+    const { isCalling } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$CallProvider$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useGlobalCall"])();
+    const { activeContact } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useCustomer$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCustomer"])();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    if (!isCalling) return null;
+    const callPagePath = "/customer/".concat(activeContact.contact.contact_id);
+    // Hide floating if already on the call page
+    if (pathname === callPagePath) return null;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "fixed bottom-6 right-6 z-50 cursor-pointer rounded-xl bg-red-600 px-4 py-2 text-white shadow-lg hover:bg-red-700",
+        onClick: ()=>router.push(callPagePath),
+        children: "Call active - Click to return"
+    }, void 0, false, {
+        fileName: "[project]/src/component/module/customer/component/body/floatingcall.tsx",
+        lineNumber: 22,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+_s(FloatingEndCall, "mjpw6GaOze22qZzfxePrR1J7DZU=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$component$2f$_backoffice$2f$provider$2f$CallProvider$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useGlobalCall"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hook$2f$useCustomer$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCustomer"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
+_c = FloatingEndCall;
+var _c;
+__turbopack_context__.k.register(_c, "FloatingEndCall");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+]);
+
+//# sourceMappingURL=src_293f4fbb._.js.map

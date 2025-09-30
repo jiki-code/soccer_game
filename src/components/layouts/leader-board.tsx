@@ -18,6 +18,7 @@ type Player = {
   avatar?: any; // Replace with Next/Image static import in your app
   position: number;
   color?: string;
+  bg?: string;
   icon?: any;
 };
 
@@ -28,7 +29,9 @@ const players: Player[] = [
     username: "@username",
     avatar: avatar2, // Replace with your image path
     position: 2,
-    color: "blue-500",
+    color: "text-blue-500",
+    bg: "bg-blue-500",
+
     icon: brozen_laurel_wreath,
   },
   {
@@ -37,7 +40,8 @@ const players: Player[] = [
     username: "@username",
     avatar: avatar1, // Replace with your image path
     position: 1,
-    color: "yellow-400",
+    color: "text-yellow-500",
+    bg: "bg-yellow-500",
     icon: golden_laurel_wreath,
   },
   {
@@ -46,7 +50,8 @@ const players: Player[] = [
     username: "@username",
     avatar: avatar3, // Replace with your image path
     position: 3,
-    color: "green-500",
+    color: "text-green-500",
+    bg: "bg-green-500",
     icon: brozen_laurel_wreath,
   },
 ];
@@ -60,7 +65,7 @@ const getPositionColor = (pos: number) => {
     case 3:
       return "border-green-500";
     default:
-      return "gray-400";
+      return "border-gray-400";
   }
 };
 
@@ -130,13 +135,13 @@ export default function LeaderBoard() {
 
               {player.position === 1 && (
                 <div
-                  className={`absolute -top-6 left-1/2 transform -translate-x-1/2 text-3xl text-${player.color}`}
+                  className={`absolute -top-6 left-1/2 transform -translate-x-1/2 text-3xl ${player.color}`}
                 >
                   👑
                 </div>
               )}
               <div
-                className={`absolute z-10 bottom-[-8px] right-[34px] w-5 h-5 transform rotate-45 flex items-center justify-center bg-${player.color}`}
+                className={`absolute z-10 bottom-[-8px] right-[34px] w-5 h-5 transform rotate-45 flex items-center justify-center ${player.bg}`}
               >
                 <span className="transform -rotate-45 text-white font-bold">
                   {" "}
@@ -158,7 +163,7 @@ export default function LeaderBoard() {
             </div>
             <div className="mt-16 absolute">
               <p className="text-white md:text-lg text-sm font-semibold">{player.name}</p>
-              <p className={`text-${player.color} md:text-lg text-sm font-bold`}>
+              <p className={`${player.color} md:text-lg text-sm font-bold`}>
                 {player.points}
               </p>
               <p className="text-sm text-gray-100">{player.username}</p>
